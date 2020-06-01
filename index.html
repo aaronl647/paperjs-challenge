@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="text/javascript" src=" ./node_modules/paper/dist/paper-full.js"> </script>
+  <script type="text/paperscript" canvas="myCanvas">
+    var stars = []
+    var velocity = 2;
+    var path = new Path.Circle({
+      center: [0,0],
+      radius:10,
+      fillColor: 'white'
+    })
+    tool.onMouseMove = function(event) {
+      path.position = event.point;
+    }
+    
+    function randomInt(min, max){
+      return Math.floor(Math.random()*(max-min+1)+min);
+    }
+
+    for (var i = 0; i <= 2000; i++){
+      var circle = new Path.Circle(new Point(view.size.width, view.size.height) * Point.random(), (randomInt(0.5,2)))
+      stars.push(circle)
+      circle.fillColor= "white"
+    }
+
+    for (var i=0; i <= 2000; i++) {
+      var chance = Math.random();
+        if(chance <= 0.7) {
+          stars[i].fillColor = "#000000"
+        }
+        if(chance <= 0.29){
+          stars[i].fillColor = "#FFFF00"
+        }
+        if(chance <= 0.01){
+          stars[i].fillColor = "#0000FF"
+        }
+    }
+
+    function assignRate() {
+    for(var i = 0; i < stars.length; i++) {
+      var assignedRate = Math.random() * velocity
+      stars[i].rate = assignedRate;
+    }
+  }
+
+    function onKeyDown(event){
+      if(event.key === 'a'){
+        velocity -= 1;
+        assignRate()
+        console.log(velocity)
+      } else if (event.key ==='d') {
+        velocity +=1;
+        assignRate()
+        console.log(velocity)
+      }
+    }
+
+    function onFrame(event) {
+      for(var i = 0; i < stars.length; i++) {
+        stars[i].translate(stars[i].rate, 0)
+        if(stars[i].position.x > view.size.width) {
+            stars[i].position.x = 0;
+      }else if(stars[i].position.x < 0) {
+        stars[i].position.x = view.size.width;
+      }
+    }
+  }
+
+  assignRate()
+
+  </script>
+  <title>Stars</title>
+</head>
+
+<body>
+  <canvas id="myCanvas"></canvas>
+  <div id="instruction">
+    <h4>Instructions</h4>
+    <h5> Press 'D' to increase the speed of the stars</h5>
+    <h5> Press 'A' to decrease the speed of the stars</h5>
+  </div>
+</body>
+
+</html>
